@@ -9,3 +9,18 @@ body {
     color: antiquewhite;
     font-weight: bold;
 }
+
+.card-container {
+    border: 2px solid red;
+    display: flex;
+}
+
+.player {
+    border: 2px solid black;
+    flex: 1;
+}
+
+.dealer {
+   border: 2px solid red;
+   flex: 1;
+}

@@ -106,14 +106,32 @@ const redJoker = new Image()
 redJoker.src = "./Playing Cards/PNG-cards-1.3/red_joker.png"
 const blackJoker = new Image()
 blackJoker.src = "./Playing Cards/PNG-cards-1.3/black_joker.png"
+const backFaceCard = new Image()
+backFaceCard.src = './Playing Cards/PNG-cards-1.3/card back black.png'
+backFaceCard.height = 100;
+backFaceCard.width = 62;
 
 const message = document.querySelector("#notification");
 const buttonsContainer = document.querySelector('#buttons');
 const dealBtn = document.querySelector("#deal");
 const playerHand = document.getElementById("player-hand");
+const dealerHand = document.querySelector('#dealer-hand');
 const startBtn = document.querySelector("#start");
+const restartGameBtn = document.createElement('button');
+restartGameBtn.textContent = 'NEW GAME';
+restartGameBtn.id = 'new-game';         
+restartGameBtn.className = 'Restart-game';
+const hitBtn = document.createElement('button');
+hitBtn.textContent = 'Hit';
+hitBtn.id = 'hit-btn';
+hitBtn.className = 'hit-Button';
+const standBtn = document.createElement('button');
+standBtn.textContent = 'STAND';
+standBtn.id = 'stand-btn';
+standBtn.className = 'stand-Button';
 dealBtn.hidden = true;
-let handValue = 0;
+let playerHandValue = 0;
+let dealerHandValue = 0;
 let isAlive = false;
 let hasBlackjack = false;
 
@@ -227,16 +245,113 @@ function assignCardValue(card) {
      return 0;
  }; 
 
-const restartGameBtn = document.createElement('button');
-restartGameBtn.textContent = 'NEW GAME';
-restartGameBtn.id = 'new-game';         
-restartGameBtn.className = 'Restart-game';
+function playerFirstDeal(){
+     const playerCard1 = randomCard();
+     const playerCard2 = randomCard();
+     const playerCard1Value = assignCardValue(playerCard1);
+     const playerCard2Value = assignCardValue(playerCard2);
+     let playerPoints = playerCard1Value + playerCard2Value;
+     if ((playerPoints !== 0) && (playerCard1.name === 'ace' || playerCard2.name === 'ace') && (playerPoints > 21)) {
+          if (playerCard1.name === 'ace') {
+              playerCard1Value = 1;
+          }
+          if (playerCard2.name === 'ace') {
+              playerCard2Value = 1;
+          }
+          playerHand.appendChild(playerCard1);
+          playerHand.appendChild(playerCard2);
+          playerPoints = playerCard1Value + playerCard2Value;
+     }
+     playerHand.appendChild(playerCard1);
+     playerHand.appendChild(playerCard2);
+     return playerPoints;
+}
 
-function renderGame() {
-     const card = randomCard();
-     const value = assignCardValue(card);
-     playerHand.appendChild(card);
-     if (isAlive === true) {
+function dealerFirstDeal() {
+     const dealerCard1 = randomCard();
+     const dealerCard2 = randomCard();
+     const dealerCard1Value = assignCardValue(dealerCard1);
+     const dealerCard2Value = assignCardValue(dealerCard2);
+     let dealerPoints = dealerCard1Value + dealerCard2Value;
+     if ((dealerPoints !== 0) && (dealerCard1.name === 'ace' || dealerCard2.name === 'ace') && (dealerhandValue > 21)) {
+          if (dealerCard1.name === 'ace') {
+              dealerCard1Value = 1;
+          }
+          if (dealerCard2.name === 'ace') {
+              dealerCard2Value = 1;
+          }
+          dealerPoints = dealerCard1Value + dealerCard2Value;
+          dealerHand.appendChild(dealerCard1);
+          dealerHand.appendChild(backFaceCard);
+      }
+     dealerHand.appendChild(dealerCard1);
+     dealerHand.appendChild(backFaceCard);
+     return dealerPoints;
+}
+
+function firstDeal() { 
+   playerHandValue = playerFirstDeal();
+   dealerHandValue = dealerFirstDeal();
+   dealBtn.hidden = true;
+   buttonsContainer.appendChild(hitBtn);
+   console.log(playerHandValue ,dealerHandValue);
+}
+
+function nextPlayerCard(){
+     let newPlayerCard = randomCard();
+     let newPlayerCardValue = assignCardValue(newPlayerCard);
+     playerHand.appendChild(newPlayerCard);
+     return newPlayerCardValue;
+};
+
+function nextDealerCard() {
+     let newdealerCard = randomCard();
+     let newdealerCardValue = assignCardValue(newdealerCard);
+     dealerHand.appendChild(newdealerCard);
+     return newdealerCardValue;
+}
+
+function checkWin() {
+     if ((playerHandValue < 21)) {
+          message.textContent = "Pick A Second Card";
+          return false;
+     } else if(playerHandValue = 21) {
+          message.textContent = "BLACKJACK";
+          return true;
+     } else if(playerHandValue >21) {
+          message.textContent = 'YOU LOSE'
+          return false;
+     }
+}
+
+
+function hit() {
+     playerHandValue = playerHandValue + nextPlayerCard();
+     dealerHandValue = dealerHandValue + nextDealerCard();
+     const hasWon = checkWin();
+     console.log(playerHandValue ,dealerHandValue);
+     console.log(hasWon);
+}
+
+function renderGame(){
+     playerPoints = playerFirstDraw();
+     dealerPoints = dealerFirstDraw();
+     
+     if(playerPoints < 21) {
+          buttonsContainer.appendChild(standBtn);
+          
+     } else if (playerPoints === 21) {
+          isAlive = false;
+          hasBlackjack = true;
+          message.textContent = message.innerHTML = 'Congratulations!! You Have Black Jack!!'; 
+          dealBtn.removeEventListener("click", renderGame);
+          dealBtn.hidden = true;
+          buttonsContainer.appendChild(restartGameBtn);
+     }
+
+
+
+     /* if (isAlive === true) {
           if(handValue <= 21) {
              handValue += value;
              if (handValue < 21) {
@@ -258,11 +373,12 @@ function renderGame() {
                dealBtn.hidden = true;
                buttonsContainer.appendChild(restartGameBtn);
           }  
-          }
-     }
-console.log(isAlive, handValue);
+          } 
+     } */
+}
 
-
-dealBtn.addEventListener("click", renderGame);
+standBtn.addEventListener('click', checkWin);
+hitBtn.addEventListener('click', hit);
+dealBtn.addEventListener("click", firstDeal);
 startBtn.addEventListener('click', startGame);
 restartGameBtn.addEventListener('click', () => location.reload());
