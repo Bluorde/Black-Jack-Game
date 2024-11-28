@@ -1,0 +1,11 @@
+body {
+    margin: 0px;
+    background-image: url("table.png");
+    background-size: cover;
+    text-align: center;
+}
+
+#greeting {
+    color: antiquewhite;
+    font-weight: bold;
+}
