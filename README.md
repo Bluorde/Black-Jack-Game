@@ -1,7 +1,3 @@
-Here's the updated README:
-
----
-
 # Blackjack Game 🎴🃏
 
 ## Overview  
@@ -65,5 +61,3 @@ This project is licensed under the [MIT License](LICENSE).
 Thank you for checking out my project! Feedback and suggestions are always welcome.
 
 --- 
-
-Let me know if you'd like further refinements!
