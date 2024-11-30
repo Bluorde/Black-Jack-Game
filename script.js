@@ -134,6 +134,7 @@ let playerHandValue = 0;
 let dealerHandValue = 0;
 let isAlive = false;
 let hasBlackjack = false;
+let dealerHiddenCards = [];
 
 const twos = {
      cards: [twoOfClubs, twoOfDiamonds, twoOfHearts, twoOfSpades],
@@ -306,8 +307,8 @@ function nextPlayerCard(){
 
 function nextDealerCard() {
      let newdealerCard = randomCard();
+     dealerHiddenCards.push(newdealerCard);
      let newdealerCardValue = assignCardValue(newdealerCard);
-     dealerHand.appendChild(newdealerCard);
      return newdealerCardValue;
 }
 
@@ -331,6 +332,7 @@ function hit() {
      const hasWon = checkWin();
      console.log(playerHandValue ,dealerHandValue);
      console.log(hasWon);
+     console.log(dealerHiddenCards);
 }
 
 function renderGame(){
